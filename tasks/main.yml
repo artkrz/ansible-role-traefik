@@ -26,7 +26,7 @@
 
 - name: Deploy container
   docker_container:
-    name: traefiK
+    name: traefik
     image: traefik:v1.7.22
     state: started
     restart_policy: always
