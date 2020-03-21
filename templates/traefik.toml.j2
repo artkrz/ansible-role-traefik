@@ -1,0 +1,39 @@
+debug = false
+
+logLevel = "{{ traefik.loglevel | default('INFO') }}"
+
+{% if traefik.letsencrypt is defined %}
+defaultEntryPoints = ["https","http"]
+{% else %}
+defaultEntryPoints = ["http"]
+{% endif %}
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+{% if traefik.letsencrypt is defined %}
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+  [entryPoints.https]
+  address = ":443"
+  [entryPoints.https.tls]
+{% endif %}
+
+[api]
+[retry]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+domain = "{{ traefik.docker.domain }}"
+watch = true
+exposedByDefault = false
+
+{% if traefik.letsencrypt is defined %}
+[acme]
+email = "{{ traefik.acme.email }}"
+storage = "acme.json"
+entryPoint = "https"
+onHostRule = true
+[acme.httpChallenge]
+entryPoint = "http"
+{% endif %}

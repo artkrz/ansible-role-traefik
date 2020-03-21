@@ -1,0 +1,44 @@
+---
+
+- name: Create a directory if it does not exist
+  file:
+    path: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}"
+    state: directory
+    mode: 0755
+  tags:
+    - traefik
+
+- name: Render traefik.toml
+  template:
+    src: "traefik.toml.j2"
+    dest: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.toml"
+  tags:
+    - traefik
+
+- name: Create acme.json
+  file:
+    path: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/acme.json"
+    mode: 0600
+    state: touch
+  when: traefik.acme is defined
+  tags:
+    - traefik
+
+- name: Deploy container
+  docker_container:
+    name: traefiK
+    image: traefik
+    state: started
+    restart_policy: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.toml:/etc/traefik/traefik.toml"
+      - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/acme.json:/acme.json"
+    networks:
+      - name: "{{ traefik.docker.network | default('bridge') }}"
+  tags:
+    - traefik
