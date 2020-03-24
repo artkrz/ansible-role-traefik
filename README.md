@@ -15,10 +15,7 @@ Role Variables
 traefik.config_path | Path where config is stored (persistant volume) | /opt/docker_volumes/traefik | No
 traefik.docker.network | Docker network to use| bridge | No
 traefik.loglevel | Log level | INFO | No
-traefik.docker.domain | Domain that'll be used to request LE certs | none | Yes
-traefik.letsencrypt | Enable Let's Encrypt (boolean) | false | No
-traefik.acme.email | Email used for Let's Encrypt cert req. | none | Yes (if Let's Encrypt enabled)
-
+traefik.acme.email | Email used for Let's Encrypt cert req. | none | Yes
 
 Example config
 --------------
@@ -28,7 +25,6 @@ traefik:
   letsencrypt: true
   docker:
     network: "foobar"
-    domain: "foobar.com"
   acme:
     email: "foobar@foobar.com"
 ```

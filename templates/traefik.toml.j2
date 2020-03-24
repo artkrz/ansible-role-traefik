@@ -1,39 +1,23 @@
-debug = false
-
-logLevel = "{{ traefik.loglevel | default('INFO') }}"
-
-{% if traefik.letsencrypt is defined %}
-defaultEntryPoints = ["https","http"]
-{% else %}
-defaultEntryPoints = ["http"]
-{% endif %}
+[log]
+  level = "{{ traefik.loglevel | default('INFO') }}"
 
 [entryPoints]
-  [entryPoints.http]
-  address = ":80"
-{% if traefik.letsencrypt is defined %}
-    [entryPoints.http.redirect]
-    entryPoint = "https"
-  [entryPoints.https]
-  address = ":443"
-  [entryPoints.https.tls]
-{% endif %}
+  [entryPoints.web]
+    address = ":80"
+
+  [entryPoints.websecure]
+    address = ":443"
 
 [api]
 [retry]
 
-[docker]
-endpoint = "unix:///var/run/docker.sock"
-domain = "{{ traefik.docker.domain }}"
-watch = true
-exposedByDefault = false
+[providers.docker]
+  endpoint = "unix:///var/run/docker.sock"
+  watch = true
+  exposedByDefault = false
 
-{% if traefik.letsencrypt is defined %}
-[acme]
-email = "{{ traefik.acme.email }}"
-storage = "acme.json"
-entryPoint = "https"
-onHostRule = true
-[acme.httpChallenge]
-entryPoint = "http"
-{% endif %}
+[certificatesResolvers.letsencrypt.acme]
+  email = "{{ traefik.acme.email }}"
+  storage = "acme.json"
+  [certificatesResolvers.letsencrypt.acme.httpChallenge]
+    entryPoint = "web"

@@ -12,6 +12,8 @@
   template:
     src: "traefik.toml.j2"
     dest: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.toml"
+  notify:
+    - restart traefik
   tags:
     - traefik
 
@@ -20,25 +22,29 @@
     path: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/acme.json"
     mode: 0600
     state: touch
-  when: traefik.acme is defined
   tags:
     - traefik
 
 - name: Deploy container
   docker_container:
-    name: traefiK
-    image: traefik
+    name: traefik
+    image: traefik:v2.1
     state: started
     restart_policy: always
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.toml:/etc/traefik/traefik.toml"
       - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/acme.json:/acme.json"
     networks:
       - name: "{{ traefik.docker.network | default('bridge') }}"
+    labels:
+      traefik.http.routers.http_catchall.rule: "HostRegexp(`{any:.+}`)"
+      traefik.http.routers.http_catchall.entrypoints: "web"
+      traefik.http.routers.http_catchall.middlewares: "https_redirect"
+      traefik.http.middlewares.https_redirect.redirectscheme.scheme: "https"
+      traefik.http.middlewares.https_redirect.redirectscheme.permanent: "true"
   tags:
     - traefik
