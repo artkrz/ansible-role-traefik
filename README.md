@@ -3,8 +3,6 @@ Traefik
 
 Traefik Ansible role with Let's Encrypt support.
 
-:warning: This role works with Traefik up to v1.7.22 which is hardcoded for now. :warning:
-
 Requirements
 ------------
 
