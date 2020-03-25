@@ -29,6 +29,9 @@ traefik:
     network: "foobar"
   acme:
     email: "foobar@foobar.com"
+  dashboard:
+    domain: "traefik.foobar.com"
+    users: "test:$sdfsdfdfsdfsdfsdfsdf/0"
 ```
 
 Dependencies
