@@ -3,8 +3,6 @@ Traefik
 
 Traefik Ansible role with Let's Encrypt support.
 
-:warning: This role works with Traefik up to v1.7.22 which is hardcoded for now. :warning:
-
 Requirements
 ------------
 
@@ -18,6 +16,8 @@ traefik.config_path | Path where config is stored (persistant volume) | /opt/doc
 traefik.docker.network | Docker network to use| bridge | No
 traefik.loglevel | Log level | INFO | No
 traefik.acme.email | Email used for Let's Encrypt cert req. | none | Yes
+traefik.dashboard.domain | Domain for dashboard | None | Yes
+traefik.dashboard.users | Comma separated list of httpasswd users | No | Yes
 
 Example config
 --------------
@@ -29,6 +29,9 @@ traefik:
     network: "foobar"
   acme:
     email: "foobar@foobar.com"
+  dashboard:
+    domain: "traefik.foobar.com"
+    users: "test:$sdfsdfdfsdfsdfsdfsdf/0"
 ```
 
 Dependencies

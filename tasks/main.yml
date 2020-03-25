@@ -34,6 +34,7 @@
     ports:
       - "80:80"
       - "443:443"
+      - "127.0.0.1:8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.toml:/etc/traefik/traefik.toml"
@@ -41,10 +42,17 @@
     networks:
       - name: "{{ traefik.docker.network | default('bridge') }}"
     labels:
-      traefik.http.routers.http_catchall.rule: "HostRegexp(`{any:.+}`)"
-      traefik.http.routers.http_catchall.entrypoints: "web"
-      traefik.http.routers.http_catchall.middlewares: "https_redirect"
-      traefik.http.middlewares.https_redirect.redirectscheme.scheme: "https"
-      traefik.http.middlewares.https_redirect.redirectscheme.permanent: "true"
+      traefik.enable: "true"
+      traefik.http.routers.traefik-router-redirect.entrypoints: "http"
+      traefik.http.routers.traefik-router-redirect.rule: "Host(`{{ traefik.dashboard.domain }}`)"
+      traefik.http.routers.traefik-router-redirect.middlewares: "traefik-router-redirectscheme"
+      traefik.http.routers.traefik-router.rule: "Host(`{{ traefik.dashboard.domain }}`)"
+      traefik.http.routers.traefik-router.tls: "true"
+      traefik.http.routers.traefik-router.tls.certresolver: "letsencrypt"
+      traefik.http.routers.traefik-router.service: api@internal
+      traefik.http.routers.traefik-router.entrypoints: https
+      traefik.http.routers.traefik-router.middlewares: "traefik-router-auth"
+      traefik.http.middlewares.traefik-router-redirectscheme.redirectscheme.scheme: "https"
+      traefik.http.middlewares.traefik-router-auth.basicauth.users: "{{ traefik.dashboard.users }}"
   tags:
     - traefik
