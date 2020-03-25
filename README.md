@@ -18,6 +18,8 @@ traefik.config_path | Path where config is stored (persistant volume) | /opt/doc
 traefik.docker.network | Docker network to use| bridge | No
 traefik.loglevel | Log level | INFO | No
 traefik.acme.email | Email used for Let's Encrypt cert req. | none | Yes
+traefik.dashboard.domain | Domain for dashboard | None | Yes
+traefik.dashboard.users | Comma separated list of httpasswd users | No | Yes
 
 Example config
 --------------
