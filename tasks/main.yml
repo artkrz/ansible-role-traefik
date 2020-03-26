@@ -39,8 +39,7 @@
       - /var/run/docker.sock:/var/run/docker.sock
       - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.toml:/etc/traefik/traefik.toml"
       - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/acme.json:/acme.json"
-    networks:
-      - name: "{{ traefik.docker.network | default('bridge') }}"
+    networks: "{{ traefik.docker.networks | default(traefik_docker_networks_default) }}"
     labels:
       traefik.enable: "true"
       traefik.http.routers.traefik-router-redirect.entrypoints: "http"
