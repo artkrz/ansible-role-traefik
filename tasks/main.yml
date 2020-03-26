@@ -28,7 +28,7 @@
 - name: Deploy container
   docker_container:
     name: traefik
-    image: traefik:v2.1
+    image: traefik:v2.2
     state: started
     restart_policy: always
     ports:

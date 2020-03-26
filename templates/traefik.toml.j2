@@ -16,6 +16,21 @@
   watch = true
   exposedByDefault = false
 
+{% if traefik.docker.providers.file %}
+  [providers.file]
+    filename = "/etc/traefik/traefik.toml"
+{% endif %}
+
+{% if traefik.tls.options is defined %}
+[tls.options]
+{% for key in traefik.tls.options %}
+  [tls.options.{{ key }}]
+  {% for option in traefik.tls.options[key] %}
+  {{ option }} = {{ traefik.tls.options[key][option] }}
+  {% endfor %}
+{% endfor %}
+{% endif %}
+
 [certificatesResolvers.letsencrypt.acme]
   email = "{{ traefik.acme.email }}"
   storage = "acme.json"

@@ -18,6 +18,8 @@ traefik.loglevel | Log level | INFO | No
 traefik.acme.email | Email used for Let's Encrypt cert req. | none | Yes
 traefik.dashboard.domain | Domain for dashboard | None | Yes
 traefik.dashboard.users | Comma separated list of httpasswd users | No | Yes
+traefik.docker.providers.file | Enable Files provider | No | No
+traefik.tls.options | TLS options | No | No
 
 Example config
 --------------
