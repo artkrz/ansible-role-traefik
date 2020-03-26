@@ -13,7 +13,7 @@ Role Variables
  Variable | Description | Default value | Required
 ------------ | ------------- | ------------- | -------------
 traefik.config_path | Path where config is stored (persistant volume) | /opt/docker_volumes/traefik | No
-traefik.docker.network | Docker network to use| bridge | No
+traefik.docker.networks | Docker networks list to use| bridge | No
 traefik.loglevel | Log level | INFO | No
 traefik.acme.email | Email used for Let's Encrypt cert req. | none | Yes
 traefik.dashboard.domain | Domain for dashboard | None | Yes
@@ -26,7 +26,9 @@ Example config
 traefik:
   letsencrypt: true
   docker:
-    network: "foobar"
+    networks:
+      - name: bridge
+      - name: foobar
   acme:
     email: "foobar@foobar.com"
   dashboard:
