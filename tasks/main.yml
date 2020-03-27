@@ -10,8 +10,8 @@
 
 - name: Render traefik.toml
   template:
-    src: "traefik.toml.j2"
-    dest: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.toml"
+    src: "traefik.yaml.j2"
+    dest: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.yaml"
   notify:
     - restart traefik
   tags:
@@ -37,21 +37,10 @@
       - "127.0.0.1:8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.toml:/etc/traefik/traefik.toml"
+      - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.yaml:/etc/traefik/traefik.yaml"
       - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/acme.json:/acme.json"
-    networks: "{{ traefik.docker.networks | default(traefik_docker_networks_default) }}"
+    networks: "{{ traefik.docker_container.networks | default(traefik_docker_container_networks_default) }}"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.traefik-router-redirect.entrypoints: "http"
-      traefik.http.routers.traefik-router-redirect.rule: "Host(`{{ traefik.dashboard.domain }}`)"
-      traefik.http.routers.traefik-router-redirect.middlewares: "traefik-router-redirectscheme"
-      traefik.http.routers.traefik-router.rule: "Host(`{{ traefik.dashboard.domain }}`)"
-      traefik.http.routers.traefik-router.tls: "true"
-      traefik.http.routers.traefik-router.tls.certresolver: "letsencrypt"
-      traefik.http.routers.traefik-router.service: api@internal
-      traefik.http.routers.traefik-router.entrypoints: https
-      traefik.http.routers.traefik-router.middlewares: "traefik-router-auth"
-      traefik.http.middlewares.traefik-router-redirectscheme.redirectscheme.scheme: "https"
-      traefik.http.middlewares.traefik-router-auth.basicauth.users: "{{ traefik.dashboard.users }}"
   tags:
     - traefik
