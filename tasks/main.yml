@@ -1,5 +1,4 @@
 ---
-
 - name: Create a directory if it does not exist
   file:
     path: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}"
@@ -40,6 +39,7 @@
       - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/traefik.yaml:/etc/traefik/traefik.yaml"
       - "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/acme.json:/acme.json"
     networks: "{{ traefik.docker_container.networks | default(traefik_docker_container_networks_default) }}"
+    env: "{{ traefik.docker_container.env }}"
     labels:
       traefik.enable: "true"
   tags:
