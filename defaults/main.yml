@@ -1,3 +1,4 @@
 ---
 traefik_docker_container_networks_default:
   - name: bridge
+traefik_version: v2.2
