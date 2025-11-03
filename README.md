@@ -1,10 +1,15 @@
 Traefik
 =========
 
-Traefik Ansible role with Let's Encrypt support.
+Traefik v3 Ansible role with Let's Encrypt support.
+
+> **⚠️ Important:** This role has been upgraded from Traefik v2.2 to v3.5.4. Please read the [Migration Guide](MIGRATION_V2_TO_V3.md) before upgrading existing installations.
 
 Requirements
 ------------
+
+- Docker
+- Ansible 2.9+
 
 
 Role Variables
@@ -48,6 +53,9 @@ traefik:
       letsencrypt:
         acme:
           email: "foo@foobar.com"
+          storage: "/acme.json"
+          httpChallenge:
+            entryPoint: http
     tls:
       options:
         tls12:
@@ -69,16 +77,18 @@ traefik:
               - "admin:$abkaiusdhu43&S5ts*vFk0"
       routers:
         traefik-router-redirect:
-          entrypoints: "http"
+          entryPoints:
+            - http
           rule: "Host(`traefik-dashboard.foobar.com`)"
           service: noop@internal
           middlewares: 
             - traefik-router-redirectscheme
         traefik-router:
-          entrypoints: "https"
+          entryPoints:
+            - https
           rule: "Host(`traefik-dashboard.foobar.com`)"
           tls:
-            certresolver: "letsencrypt"
+            certResolver: "letsencrypt"
           service: api@internal
           middlewares:
             - traefik-router-auth
