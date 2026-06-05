@@ -17,10 +17,11 @@
     - traefik
 
 - name: Create acme.json
-  file:
-    path: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/acme.json"
-    mode: 0600
-    state: touch
+  copy:
+    content: ""
+    dest: "{{ traefik.config_path | default('/opt/docker_volumes/traefik') }}/acme.json"
+    force: false
+    mode: '0600'
   tags:
     - traefik
 
